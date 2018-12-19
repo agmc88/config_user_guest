@@ -1,0 +1,124 @@
+---
+- hosts: test
+  gather_facts: no
+  tasks:
+        - name: 1 - check tar path
+          stat:
+            path: /usr/bin/tar
+          register: tarstat
+
+        - name: 1 Bis - Ensure tar command is available
+          debug:
+            msg: tar is available
+          when: tarstat.stat.exists
+
+        - name: 2 - check unzip path
+          stat:
+            path: /usr/bin/unzip
+          register: zipstat
+
+        - name: 2 Bis - Ensure tar command is available
+          debug:
+            msg: zip is available
+          when: zipstat.stat.exists
+
+        - name: 3 - Send the tarball on the remote target
+          copy:
+            src: ../files/French.lproj.tar.gz
+            dest: "/Users/{{ adminUser }}/"
+            owner: "{{ adminUser }}"
+            group:  staff
+            mode: u+x
+
+        - name: 4 - Extract tarball
+          # unarchive:                              # CANNOT USE THIS MODULE ON BSD COMPUTERS
+          #   src:  /Users/eabjm/Desktop/French.lproj.tar.gz
+          #   dest: /Users/eabjm/Desktop/
+          #   remote_src: yes
+          shell:  "/usr/bin/tar -Pxzf French.lproj.tar.gz" 
+          # become: yes
+          ignore_errors: yes
+          args:
+            warn: false # Prevent warning message. 
+        
+        - name: 5 - Check User "French.lproj"
+          stat:
+            path: "/Users/{{ adminUser }}/French.lproj"
+          register: lproj
+
+        - name: 5 Bis - Ensure French.lproj exists msg
+          debug:
+            msg:  French.lproj is extracted
+          when: lproj.stat.exists
+        
+        - name: 6 - Remove French.lproj folder
+          file:
+            path: /System/Library/User Template/French.lproj
+            state: absent
+          become: yes
+
+        - name: 7 - Check if folder UT French.lproj is deleted
+          stat:
+            path : /System/Library/User Template/French.lproj
+          register: UTflproj
+          become: yes
+
+        - name: 7 Bis - Ensure that the folder is deleted
+          debug:
+            msg: /System/Library/User Template/French.lproj is deleted
+          when: UTflproj.stat.exists == false
+
+        - name: 8 - Copying the script to move the French.lproj
+          copy:
+            src: ../files/copy_french-lproj.sh
+            dest: "/Users/{{ adminUser }}/Desktop/"
+            owner: "{{ adminUser }}"
+            group:  staff
+            mode: u+x
+            
+        - name: 9 - Copying the new environment
+          shell: /Users/{{ adminUser }}/Desktop/copy_french-lproj.sh "{{ adminUser }}"
+          become: yes
+
+        - name: 10 - Check if folder UT French.lproj is copied
+          stat:
+            path : /System/Library/User Template/French.lproj
+          register: UTflprojCopy
+          become: yes
+
+        - name: 10 Bis - Ensure that the folder is copied
+          debug:
+            msg: /System/Library/User Template/French.lproj is copied
+          when: UTflprojCopy.stat.exists
+        
+        - name: 11 - Remove English.lproj
+          file:
+            path: /System/Library/User Template/English.lproj
+            state: absent
+          become: yes
+
+        - name: 12 - Create a symlink for the English.lproj for english teachers.
+          # file:
+          #   src:    /System/Library/User Template/French.lproj
+          #   dest:   /System/Library/User Template/English.lproj
+          #   state:  link
+          #   owner:  root
+          #   group:  wheel
+          #   force:  yes
+          #   become: yes
+          # shell: ln -s /System/Library/User\ Template/English.lproj /System/Library/User\ Template/French.lproj
+          shell: ln -s /System/Library/User\ Template/French.lproj /System/Library/User\ Template/English.lproj 
+          become: yes
+          args:
+            warn: false # Prevent warning message. 
+        
+        - name: 12 - Delete French.lproj from home user
+          file:
+            path: "/Users/{{ adminUser }}/French.lproj"
+            state:   absent
+          
+        - name:
+          file:
+            path: "/Users/{{ adminUser }}/French.lproj.tar.gz"
+            state: absent
+...

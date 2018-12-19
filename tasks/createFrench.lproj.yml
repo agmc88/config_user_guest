@@ -1,0 +1,71 @@
+#################################################################################################
+# Use this command to execute the playbook.                                                     #
+# ansible-playbook createFrench.lproj.yml -u remoteUser -K --extra-vars "adminUser=RemoteUser"  #
+#################################################################################################
+
+- hosts: test
+  gather_facts: no
+  tasks:
+    - name: 1 - Check if the script config_guest.sh is in the "admin" Desktop
+      stat:
+        path: "/Users/{{ adminUser}}/Desktop/config_guest.sh"
+      register: CheckScript
+    
+    - name: 1 - Check Message
+      debug:
+        msg:  config_guest.sh is here !
+      when: CheckScript.stat.exists
+
+    - name: 2 - Check if tar is installed 
+      stat:
+        path: /usr/bin/tar
+      register: CheckTar
+
+    - name: 2 - Check Message
+      debug:
+        msg:  Tar is installed
+      when: CheckTar.stat.exists
+    
+    - name: 3 - Copy config_guest.sh if it isn't on the remote target
+      copy:
+        src: ../files/config_guest.sh
+        dest: "/Users/{{ adminUser }}/Desktop/"
+        owner: "{{ adminUser }}"
+        group:  staff
+        mode: u+x
+      when: not CheckScript.stat.exists
+
+    - name: 4 - Check if config_guest.sh is on the remote target
+      stat:
+        path: "/Users/{{ adminUser }}/Desktop/config_guest.sh"
+      register: CheckScript2
+
+    - name: 5 - execute config_guest script if it's on the remote target
+      command: "/Users/{{ adminUser }}/Desktop/config_guest.sh {{ adminUser }}"
+      become: yes
+      when: CheckScript2.stat.exists
+
+    - name: 6 - Create the tarball
+      command: tar -zcf Desktop/French.lproj.tar.gz French.lproj
+      args:
+        warn: false
+      become: yes
+
+    - name: 7 - remove French.lproj from Desktop user
+      file:
+        path: "/Users/{{ adminUser}}/French.lproj"
+        state:  absent
+    
+    - name: 8 - Send the tarball to the ansible server using "fetch"
+      fetch:
+        src: "/Users/{{ adminUser}}/Desktop/French.lproj.tar.gz"
+        dest: ../files/French.lproj.tar.gz
+        flat: yes
+        validate_checksum: yes
+    
+    - name: 9 - Delete tarball from remote target
+      file:
+        path: "/Users/{{ adminUser}}/Desktop/French.lproj.tar.gz"
+        state: absent
+
+- import_playbook: deployFrench.lproj.yml
