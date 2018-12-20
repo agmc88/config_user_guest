@@ -11,3 +11,4 @@ install:
 
 script:
         - ansible-playbook tasks/createFrench.lproj.yml --syntax-check
+        - ansible-playbook tasks/createFrench.lproj.yml --connection=local --sudo
