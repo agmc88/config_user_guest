@@ -1,7 +1,6 @@
 ---
 language:   python
 python:     2.7
-services:   ansible
 
 before_install:
         - sudo apt update
@@ -12,4 +11,4 @@ install:
 
 
 script:
-        - ansible-playbook createFrench.lproj.yml -u remoteUser -K --extra-vars "adminUser=RemoteUser" --syntax-check
+        - ansible-playbook createFrench.lproj.yml --syntax-check
