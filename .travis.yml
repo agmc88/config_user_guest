@@ -1,6 +1,5 @@
 ---
 language:   python
-python:     3
 
 os: osx 
 image_osx: xcode10
