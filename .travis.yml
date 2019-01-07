@@ -7,11 +7,11 @@ image_osx: xcode10.1
 
 before_install:
 
-          #install:
-          # - sudo apt install python-pip
+install:
     - pip install ansible
+
 
 
 script:
         - ansible-playbook tasks/createFrench.lproj.yml --syntax-check
-        - ansible-playbook tasks/createFrench.lproj.yml --connection=local --sudo
+        - ansible-playbook tasks/createFrench.lproj.yml --connection=local -K -e "adminUser=test"
