@@ -20,7 +20,7 @@ before_install:
     - sudo dscl . -passwd /Users/test Pa$$w0rd
 
 install:
-    - pip install test
+    - pip install ansible
 
 
 
