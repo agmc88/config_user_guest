@@ -7,7 +7,7 @@ before_install:
         - sudo apt update
 
 install:
-        - apt install python-pip
+        - sudo apt install python-pip
         - pip install ansible
 
 
