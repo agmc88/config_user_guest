@@ -2,12 +2,13 @@
 language:   python
 
 os: osx 
-image_osx: xcode10
+image_osx: xcode11
 
 before_install:
         - sudo apt update
 
 install:
+        - apt install python-pip
         - pip install ansible
 
 
