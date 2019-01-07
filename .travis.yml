@@ -5,11 +5,11 @@ os: osx
 
 image_osx: xcode10.1
 
-#before_install:
+before_install:
 
           #install:
           # - sudo apt install python-pip
-          #- pip install ansible
+    - pip install ansible
 
 
 script:
