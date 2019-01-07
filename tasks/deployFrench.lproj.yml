@@ -1,5 +1,5 @@
 ---
-- hosts: test
+- hosts: localhost
   gather_facts: no
   tasks:
         - name: 1 - check tar path

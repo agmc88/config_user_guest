@@ -3,7 +3,7 @@
 # ansible-playbook createFrench.lproj.yml -u remoteUser -K --extra-vars "adminUser=RemoteUser"  #
 #################################################################################################
 
-- hosts: test
+- hosts: localhost
   gather_facts: no
   tasks:
     - name: 1 - Check if the script config_guest.sh is in the "admin" Desktop
