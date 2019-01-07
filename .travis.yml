@@ -1,14 +1,26 @@
 ---
-language:   python3
+language:   
+        - python3
+        - objective-c
 
 os: osx
 
 image_osx: xcode10.1
 
 before_install:
+        # Create grp
+    - sudo dscl . -create /Groups/test gid 300
+    - sudo dscl . -create /Groups/test RealName "Groupe Ansible"
+    - sudo dscl . -create /Groups/test passwd "*"
+        # Create User        
+    - sudo dscl . -create /Users/test uid 300
+    - sudo dscl . -create /Users/test gid 300
+    - sudo dscl . -create /Users/test UserShell /bin/bash
+    - sudo dscl . -create /Users/test NFSHomeDirectory /Users/test
+    - sudo dscl . -passwd /Users/test Pa$$w0rd
 
 install:
-    - pip install ansible
+    - pip install test
 
 
 
