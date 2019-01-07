@@ -1,7 +1,6 @@
 ---
 language:   python
 
-os: osx 
 image_osx: xcode11
 
 before_install:
