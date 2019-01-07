@@ -1,7 +1,7 @@
 ---
 language:   python
 
-image_osx: xcode11
+image_osx: xcode10.1
 
 before_install:
         - sudo apt update
