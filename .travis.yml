@@ -5,8 +5,7 @@ os: osx
 
 image_osx: xcode10.1
 
-before_install:
-        - sudo apt update
+#before_install:
 
           #install:
           # - sudo apt install python-pip
