@@ -8,9 +8,9 @@ image_osx: xcode10.1
 before_install:
         - sudo apt update
 
-install:
-        - sudo apt install python-pip
-        - pip install ansible
+          #install:
+          # - sudo apt install python-pip
+          #- pip install ansible
 
 
 script:
